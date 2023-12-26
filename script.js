@@ -3,10 +3,21 @@ function fetchUser() {  // The function to fetch random user data from a public 
     showSpinner();  // To have a spinner effect during the fetch
     
     fetch('https://randomuser.me/api')  // The URL
-        .then(response => response.json())  // To get the fetch response
+    // fetch('https://randomuser.me/api1')  // To mime an error
+        .then(response => { 
+            if (!response.ok) { // If the response isn't okay
+                throw new Error('Request Failed')   // To return an error message (it's caught in the .catch)
+            }
+
+            return response.json() // To get the fetch response
+        })  
         .then(data => { // The fetched data
             hideSpinner();  // To stop the spinner effect after the fetch
             displayUser(data.results[0])    // Call of the function displayUser - the input (data.results[0]) is the first element of an array which contains all data we need
+        })
+        .catch(errorMessage => {
+            hideSpinner();  // To hide the spinner effect in case of an error (when the response isn't okay)
+            document.getElementById('user').innerHTML = `<p class="text-xl text-center text-red-500 mb-5">${errorMessage}</p>`; // To show the error message in the DOM
         })
 }
 
